@@ -1,6 +1,6 @@
 
 ## CertPal
-This is a personal project I'm building as a cybersecurity student who wants to make studying more effective and less overwhelming. The goal of this app is to use AI to help students prepare for popular cybersecurity certifications like Security+, CEH, and CISSP. Instead of just memorizing flashcards, this tool will use intelligent questioning, explanations, and even study plans to help students understand the concepts better.
+This is a personal project I'm building as a cybersecurity student who wants to make studying more effective and less overwhelming. Since everyone is always on thier phones I wanted to create an app that would improve one's knowledge of cybersecurity instead of scrolling mindlessly on social media. Most apps cost on the app store, at least for the better qualiity apps. The goal of this app is to use AI to help students prepare for popular cybersecurity certifications like Security+, CEH, and CISSP for free and for the benefit of them and them only. Instead of just memorizing flashcards, this tool will use intelligent questioning, explanations, and even study plans to help students understand the concepts better.
 
 I'm building this project to improve my own skills in cybersecurity, software development, and working with AI. I also hope it helps others who are on the same path.
 
