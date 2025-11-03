@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
+import { Slider } from "@/components/ui/slider";
 import { Clock, CheckCircle2, XCircle } from "lucide-react";
 import Navbar from "@/components/Navbar";
 
@@ -16,7 +17,8 @@ const examData: Record<string, any[]> = {
         "Intrusion detection system",
         "Data loss prevention software"
       ],
-      correct: 0
+      correct: 0,
+      difficulty: "easy"
     },
     {
       question: "A security analyst discovers that an attacker has been using stolen credentials. Which type of attack is this?",
@@ -26,7 +28,8 @@ const examData: Record<string, any[]> = {
         "SQL injection",
         "Cross-site scripting"
       ],
-      correct: 1
+      correct: 1,
+      difficulty: "medium"
     },
     {
       question: "Which of the following BEST describes defense in depth?",
@@ -36,7 +39,8 @@ const examData: Record<string, any[]> = {
         "Focusing only on perimeter security",
         "Relying on endpoint protection only"
       ],
-      correct: 1
+      correct: 1,
+      difficulty: "hard"
     }
   ],
   "network-plus": [
@@ -48,7 +52,8 @@ const examData: Record<string, any[]> = {
         "Switch with VLANs",
         "Bridge"
       ],
-      correct: 2
+      correct: 2,
+      difficulty: "easy"
     },
     {
       question: "Which routing protocol is considered a distance-vector protocol?",
@@ -58,7 +63,8 @@ const examData: Record<string, any[]> = {
         "RIP",
         "IS-IS"
       ],
-      correct: 2
+      correct: 2,
+      difficulty: "medium"
     },
     {
       question: "What is the purpose of QoS in a network?",
@@ -68,7 +74,8 @@ const examData: Record<string, any[]> = {
         "Encrypt data",
         "Authenticate users"
       ],
-      correct: 1
+      correct: 1,
+      difficulty: "hard"
     }
   ],
   "cysa-plus": [
@@ -80,7 +87,8 @@ const examData: Record<string, any[]> = {
         "Containment",
         "Eradication"
       ],
-      correct: 2
+      correct: 2,
+      difficulty: "easy"
     },
     {
       question: "Which metric indicates the average time to detect a security incident?",
@@ -90,7 +98,8 @@ const examData: Record<string, any[]> = {
         "RPO",
         "RTO"
       ],
-      correct: 1
+      correct: 1,
+      difficulty: "medium"
     },
     {
       question: "What is the primary purpose of a security orchestration platform?",
@@ -100,23 +109,44 @@ const examData: Record<string, any[]> = {
         "Scan for vulnerabilities",
         "Manage user access"
       ],
-      correct: 1
+      correct: 1,
+      difficulty: "hard"
     }
   ]
 };
 
 const Exam = () => {
   const { certId } = useParams();
+  const [showSetup, setShowSetup] = useState(true);
+  const [numQuestions, setNumQuestions] = useState([5]);
+  const [difficulty, setDifficulty] = useState<"all" | "easy" | "medium" | "hard">("all");
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [answers, setAnswers] = useState<(number | null)[]>([]);
   const [showResults, setShowResults] = useState(false);
-  const [timeLeft, setTimeLeft] = useState(3600); // 60 minutes
+  const [timeLeft, setTimeLeft] = useState(3600);
+  const [filteredQuestions, setFilteredQuestions] = useState<any[]>([]);
   
-  const questions = examData[certId || "security-plus"] || examData["security-plus"];
+  const allQuestions = examData[certId || "security-plus"] || examData["security-plus"];
+
+  const startExam = () => {
+    let filtered = difficulty === "all" 
+      ? [...allQuestions] 
+      : allQuestions.filter(q => q.difficulty === difficulty);
+    
+    filtered = filtered.slice(0, numQuestions[0]);
+    setFilteredQuestions(filtered);
+    setAnswers(new Array(filtered.length).fill(null));
+    setTimeLeft(filtered.length * 120); // 2 minutes per question
+    setShowSetup(false);
+  };
 
   useEffect(() => {
-    setAnswers(new Array(questions.length).fill(null));
-  }, [certId]);
+    if (showSetup) {
+      setAnswers([]);
+      setCurrentQuestion(0);
+      setShowResults(false);
+    }
+  }, [certId, showSetup]);
 
   useEffect(() => {
     if (showResults || timeLeft <= 0) return;
@@ -153,16 +183,129 @@ const Exam = () => {
   const calculateScore = () => {
     let correct = 0;
     answers.forEach((answer, index) => {
-      if (answer === questions[index].correct) {
+      if (answer === filteredQuestions[index].correct) {
         correct++;
       }
     });
     return correct;
   };
 
+  if (showSetup) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-background to-secondary">
+        <Navbar />
+        
+        <div className="container mx-auto px-4 py-12">
+          <div className="max-w-2xl mx-auto">
+            <Card className="border-2">
+              <CardHeader>
+                <CardTitle className="text-3xl">Exam Setup</CardTitle>
+                <CardDescription>
+                  Configure your practice exam before you begin
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-8">
+                <div className="space-y-4">
+                  <div>
+                    <label className="text-sm font-medium mb-2 block">
+                      Number of Questions: {numQuestions[0]}
+                    </label>
+                    <Slider
+                      value={numQuestions}
+                      onValueChange={setNumQuestions}
+                      min={3}
+                      max={allQuestions.length}
+                      step={1}
+                      className="w-full"
+                    />
+                    <p className="text-xs text-muted-foreground mt-2">
+                      Maximum: {allQuestions.length} questions available
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="text-sm font-medium mb-2 block">
+                      Difficulty Level
+                    </label>
+                    <div className="grid grid-cols-2 gap-3">
+                      <Button
+                        variant={difficulty === "all" ? "default" : "outline"}
+                        onClick={() => setDifficulty("all")}
+                        className="h-auto py-4"
+                      >
+                        <div>
+                          <div className="font-semibold">All Levels</div>
+                          <div className="text-xs opacity-80">Mixed difficulty</div>
+                        </div>
+                      </Button>
+                      <Button
+                        variant={difficulty === "easy" ? "default" : "outline"}
+                        onClick={() => setDifficulty("easy")}
+                        className="h-auto py-4"
+                      >
+                        <div>
+                          <div className="font-semibold">Easy</div>
+                          <div className="text-xs opacity-80">Foundation level</div>
+                        </div>
+                      </Button>
+                      <Button
+                        variant={difficulty === "medium" ? "default" : "outline"}
+                        onClick={() => setDifficulty("medium")}
+                        className="h-auto py-4"
+                      >
+                        <div>
+                          <div className="font-semibold">Medium</div>
+                          <div className="text-xs opacity-80">Intermediate</div>
+                        </div>
+                      </Button>
+                      <Button
+                        variant={difficulty === "hard" ? "default" : "outline"}
+                        onClick={() => setDifficulty("hard")}
+                        className="h-auto py-4"
+                      >
+                        <div>
+                          <div className="font-semibold">Hard</div>
+                          <div className="text-xs opacity-80">Advanced level</div>
+                        </div>
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="pt-4 border-t">
+                  <div className="bg-muted/50 p-4 rounded-lg mb-4">
+                    <h3 className="font-semibold mb-2">Exam Details</h3>
+                    <ul className="text-sm space-y-1 text-muted-foreground">
+                      <li>• Questions: {numQuestions[0]}</li>
+                      <li>• Time limit: {numQuestions[0] * 2} minutes</li>
+                      <li>• Passing score: 70%</li>
+                      <li>• Difficulty: {difficulty === "all" ? "Mixed" : difficulty.charAt(0).toUpperCase() + difficulty.slice(1)}</li>
+                    </ul>
+                  </div>
+                  
+                  <div className="flex gap-4">
+                    <Link to="/certifications" className="flex-1">
+                      <Button variant="outline" className="w-full">Cancel</Button>
+                    </Link>
+                    <Button 
+                      onClick={startExam}
+                      className="flex-1 bg-gradient-to-r from-primary to-accent"
+                    >
+                      Start Exam
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   if (showResults) {
     const score = calculateScore();
-    const percentage = (score / questions.length) * 100;
+    const percentage = (score / filteredQuestions.length) * 100;
     const passed = percentage >= 70;
 
     return (
@@ -184,7 +327,7 @@ const Exam = () => {
                     {passed ? 'PASSED' : 'FAILED'}
                   </div>
                   <p className="text-xl mt-4">
-                    {score} correct out of {questions.length} questions
+                    {score} correct out of {filteredQuestions.length} questions
                   </p>
                   <p className="text-muted-foreground mt-2">
                     Passing score: 70%
@@ -192,7 +335,7 @@ const Exam = () => {
                 </div>
 
                 <div className="space-y-4 mt-8">
-                  {questions.map((q, index) => {
+                  {filteredQuestions.map((q, index) => {
                     const userAnswer = answers[index];
                     const isCorrect = userAnswer === q.correct;
                     
@@ -232,8 +375,8 @@ const Exam = () => {
     );
   }
 
-  const progress = ((currentQuestion + 1) / questions.length) * 100;
-  const question = questions[currentQuestion];
+  const progress = ((currentQuestion + 1) / filteredQuestions.length) * 100;
+  const question = filteredQuestions[currentQuestion];
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background to-secondary">
@@ -255,7 +398,7 @@ const Exam = () => {
           <div className="mb-6">
             <div className="flex items-center justify-between mb-2">
               <span className="text-sm font-medium">
-                Question {currentQuestion + 1} of {questions.length}
+                Question {currentQuestion + 1} of {filteredQuestions.length}
               </span>
               <span className="text-sm font-medium">
                 {answers.filter(a => a !== null).length} answered
@@ -294,7 +437,7 @@ const Exam = () => {
             </Button>
 
             <div className="flex gap-2">
-              {currentQuestion < questions.length - 1 ? (
+              {currentQuestion < filteredQuestions.length - 1 ? (
                 <Button onClick={() => setCurrentQuestion(currentQuestion + 1)}>
                   Next Question
                 </Button>
