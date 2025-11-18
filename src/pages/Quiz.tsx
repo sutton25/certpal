@@ -12,81 +12,96 @@ const quizData: Record<string, any[]> = {
     {
       question: "Which of the following is NOT a type of malware?",
       options: ["Trojan", "Virus", "Firewall", "Ransomware"],
-      correct: 2
+      correct: 2,
+      explanation: "A firewall is a security device that monitors and controls network traffic, not a type of malware. Trojans, viruses, and ransomware are all malicious software designed to harm or exploit systems."
     },
     {
       question: "What does SSL stand for?",
       options: ["Secure Socket Layer", "System Security Layer", "Safe Server Link", "Secure System Login"],
-      correct: 0
+      correct: 0,
+      explanation: "SSL stands for Secure Socket Layer, which is a cryptographic protocol designed to provide secure communication over a computer network. It has been replaced by TLS (Transport Layer Security) in modern implementations."
     },
     {
       question: "Which authentication factor is 'something you know'?",
       options: ["Fingerprint", "Password", "Smart card", "Retina scan"],
-      correct: 1
+      correct: 1,
+      explanation: "Password is 'something you know'. Fingerprint and retina scan are 'something you are' (biometric), and smart card is 'something you have' (possession factor)."
     },
     {
       question: "What is the primary purpose of encryption?",
       options: ["Compress data", "Ensure confidentiality", "Improve speed", "Reduce storage"],
-      correct: 1
+      correct: 1,
+      explanation: "Encryption's primary purpose is to ensure confidentiality by converting data into a coded format that only authorized parties can read. It doesn't compress data, improve speed, or reduce storage."
     },
     {
       question: "Which protocol is used for secure email transmission?",
       options: ["HTTP", "FTP", "S/MIME", "SMTP"],
-      correct: 2
+      correct: 2,
+      explanation: "S/MIME (Secure/Multipurpose Internet Mail Extensions) provides encryption and digital signatures for email. HTTP is for web traffic, FTP for file transfer, and SMTP is for sending email but without built-in encryption."
     }
   ],
   "network-plus": [
     {
       question: "What layer of the OSI model does a router operate at?",
       options: ["Physical", "Data Link", "Network", "Transport"],
-      correct: 2
+      correct: 2,
+      explanation: "Routers operate at Layer 3 (Network layer) of the OSI model, where they make routing decisions based on IP addresses. Switches operate at Layer 2 (Data Link), and hubs at Layer 1 (Physical)."
     },
     {
       question: "What is the default subnet mask for a Class C network?",
       options: ["255.0.0.0", "255.255.0.0", "255.255.255.0", "255.255.255.255"],
-      correct: 2
+      correct: 2,
+      explanation: "Class C networks have a default subnet mask of 255.255.255.0 (/24), allowing for 254 usable host addresses. Class A uses 255.0.0.0, and Class B uses 255.255.0.0."
     },
     {
       question: "Which port does HTTP use by default?",
       options: ["21", "22", "80", "443"],
-      correct: 2
+      correct: 2,
+      explanation: "HTTP uses port 80 by default. Port 21 is for FTP, port 22 is for SSH, and port 443 is for HTTPS (secure HTTP)."
     },
     {
       question: "What does NAT stand for?",
       options: ["Network Address Translation", "Network Access Technology", "Node Address Transfer", "Network Authentication Token"],
-      correct: 0
+      correct: 0,
+      explanation: "NAT stands for Network Address Translation, which allows multiple devices on a private network to share a single public IP address when accessing the internet."
     },
     {
       question: "Which topology connects all devices to a central hub?",
       options: ["Ring", "Star", "Mesh", "Bus"],
-      correct: 1
+      correct: 1,
+      explanation: "Star topology connects all devices to a central hub or switch. Ring topology connects devices in a circle, mesh provides multiple paths between devices, and bus uses a single cable backbone."
     }
   ],
   "cysa-plus": [
     {
       question: "What is the first phase of the incident response lifecycle?",
       options: ["Detection", "Preparation", "Containment", "Recovery"],
-      correct: 1
+      correct: 1,
+      explanation: "Preparation is the first phase of incident response, where you establish policies, procedures, and resources before an incident occurs. Detection comes after preparation when you identify potential security events."
     },
     {
       question: "Which tool is primarily used for network traffic analysis?",
       options: ["Nmap", "Wireshark", "Metasploit", "Burp Suite"],
-      correct: 1
+      correct: 1,
+      explanation: "Wireshark is a network protocol analyzer used for capturing and analyzing network traffic. Nmap is for network scanning, Metasploit for penetration testing, and Burp Suite for web application testing."
     },
     {
       question: "What does IOC stand for in cybersecurity?",
       options: ["Internet of Computers", "Indicator of Compromise", "Internal Operations Center", "Integrated Operations Control"],
-      correct: 1
+      correct: 1,
+      explanation: "IOC stands for Indicator of Compromise, which refers to artifacts or evidence that suggest a security breach has occurred, such as unusual network traffic, suspicious file changes, or malware signatures."
     },
     {
       question: "Which type of testing simulates an attack with full knowledge?",
       options: ["Black box", "White box", "Gray box", "Red box"],
-      correct: 1
+      correct: 1,
+      explanation: "White box testing provides full knowledge of the system, including source code and architecture. Black box has no knowledge, gray box has partial knowledge, and red box is not a standard testing type."
     },
     {
       question: "What is the purpose of threat hunting?",
       options: ["Wait for alerts", "Proactively search for threats", "Install antivirus", "Configure firewalls"],
-      correct: 1
+      correct: 1,
+      explanation: "Threat hunting is a proactive approach to finding threats that have evaded existing security controls. It involves actively searching for indicators of compromise rather than waiting for automated alerts."
     }
   ]
 };
@@ -112,8 +127,6 @@ const Quiz = () => {
     if (index === question.correct) {
       setScore(score + 1);
       toast.success("Correct!");
-    } else {
-      toast.error("Incorrect!");
     }
   };
 
@@ -235,6 +248,20 @@ const Quiz = () => {
               })}
             </CardContent>
           </Card>
+
+          {answered && selectedAnswer !== question.correct && (
+            <Card className="border-2 border-orange-500 bg-orange-50 dark:bg-orange-950 mb-6">
+              <CardHeader>
+                <CardTitle className="text-lg flex items-center gap-2 text-orange-900 dark:text-orange-100">
+                  <XCircle className="h-5 w-5" />
+                  Why this is incorrect
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <p className="text-orange-900 dark:text-orange-100">{question.explanation}</p>
+              </CardContent>
+            </Card>
+          )}
 
           <div className="flex justify-end">
             <Button 
