@@ -1,9 +1,11 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Slider } from "@/components/ui/slider";
+import { Switch } from "@/components/ui/switch";
+import { Label } from "@/components/ui/label";
 import { ChevronLeft, ChevronRight, RotateCcw, Play } from "lucide-react";
 import Navbar from "@/components/Navbar";
 
@@ -63,16 +65,17 @@ const flashcardData: Record<string, any[]> = {
 };
 
 const studyPaces = [
-  { value: "quick", label: "Quick Review", description: "Fast-paced, 3 sec per card" },
-  { value: "normal", label: "Normal Pace", description: "Balanced, 5 sec per card" },
-  { value: "thorough", label: "Thorough Study", description: "Take your time, manual control" }
+  { value: "quick", label: "Quick Review", description: "3 seconds per card", time: 3000 },
+  { value: "normal", label: "Normal Pace", description: "5 seconds per card", time: 5000 },
+  { value: "slow", label: "Slow & Steady", description: "7 seconds per card", time: 7000 }
 ];
 
 const Flashcards = () => {
   const { certId } = useParams();
   const [showSetup, setShowSetup] = useState(true);
   const [numCards, setNumCards] = useState(10);
-  const [studyPace, setStudyPace] = useState("thorough");
+  const [studyPace, setStudyPace] = useState("normal");
+  const [autoFlip, setAutoFlip] = useState(false);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isFlipped, setIsFlipped] = useState(false);
   const [studyCards, setStudyCards] = useState<any[]>([]);
@@ -86,15 +89,21 @@ const Flashcards = () => {
     const selectedCards = allCards.slice(0, numCards);
     setStudyCards(selectedCards);
     setShowSetup(false);
-    
-    if (studyPace !== "thorough") {
-      const delay = studyPace === "quick" ? 3000 : 5000;
-      const autoFlip = setInterval(() => {
+  };
+
+  // Auto-flip functionality
+  useEffect(() => {
+    if (!showSetup && autoFlip && studyCards.length > 0) {
+      const pace = studyPaces.find(p => p.value === studyPace);
+      const delay = pace?.time || 5000;
+      
+      const flipInterval = setInterval(() => {
         setIsFlipped(prev => !prev);
       }, delay);
-      return () => clearInterval(autoFlip);
+      
+      return () => clearInterval(flipInterval);
     }
-  };
+  }, [showSetup, autoFlip, studyPace, studyCards.length]);
 
   const handleNext = () => {
     if (currentIndex < studyCards.length - 1) {
@@ -189,6 +198,22 @@ const Flashcards = () => {
                       </Card>
                     ))}
                   </div>
+                </div>
+
+                <div className="flex items-center justify-between p-4 border rounded-lg bg-card">
+                  <div className="space-y-0.5">
+                    <Label htmlFor="auto-flip" className="text-base font-medium">
+                      Auto-flip Cards
+                    </Label>
+                    <p className="text-sm text-muted-foreground">
+                      Automatically flip cards at the selected pace
+                    </p>
+                  </div>
+                  <Switch
+                    id="auto-flip"
+                    checked={autoFlip}
+                    onCheckedChange={setAutoFlip}
+                  />
                 </div>
 
                 <Button onClick={startStudying} size="lg" className="w-full">
