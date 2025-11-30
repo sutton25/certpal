@@ -19,7 +19,9 @@ This is a concept for an app that uses AI software to create flashcards, practic
 - Personalized study plans
 - Flashcards and quick-reference guides
 - Progress tracking
-- Chat Bot for help at all times
+- Floating Chat Bot for help at all times
+- Sends your questions to a local LLM via Ollama
+- Designed for IT + cybersecurity explanations (firewalls, subnets, OSI, etc.)
 
 ## Built With
 - Python
