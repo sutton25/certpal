@@ -19,6 +19,7 @@ This is a concept for an app that uses AI software to create flashcards, practic
 - Personalized study plans
 - Flashcards and quick-reference guides
 - Progress tracking
+- Chat Bot for help at all times
 
 ## Built With
 - Python
