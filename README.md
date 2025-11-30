@@ -25,3 +25,20 @@ This is a concept for an app that uses AI software to create flashcards, practic
 - Python
 - Ollama
 - Figma
+
+## Tech Stack
+
+**Frontend**
+
+- Vite + React + TypeScript
+- React Router
+- shadcn/ui + Tailwind CSS
+- React Query (@tanstack/react-query)
+- Lucide icons
+
+**Backend**
+
+- Node.js + Express
+- CORS
+- `node-fetch`
+- Local LLM via **Ollama**
