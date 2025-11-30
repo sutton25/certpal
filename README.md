@@ -22,5 +22,5 @@ This is a concept for an app that uses AI software to create flashcards, practic
 
 ## Built With
 - Python
-- OpenAI
+- Ollama
 - Figma
