@@ -1,3 +1,4 @@
+import React from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -11,6 +12,7 @@ import Exam from "./pages/Exam";
 import Progress from "./pages/Progress";
 import NotFound from "./pages/NotFound";
 import ChatBot from "./components/ChatBot";
+
 
 const queryClient = new QueryClient();
 

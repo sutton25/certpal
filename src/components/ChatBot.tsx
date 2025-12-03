@@ -4,7 +4,6 @@ import { Card } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { MessageCircle, X, Send, Loader2 } from "lucide-react";
-import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 
 interface Message {
@@ -27,32 +26,48 @@ const ChatBot = () => {
   }, [messages]);
 
   const sendMessage = async () => {
+
+    
     if (!input.trim() || isLoading) return;
 
     const userMessage: Message = { role: "user", content: input };
-    setMessages((prev) => [...prev, userMessage]);
+    const updatedMessages = [...messages, userMessage];
+
+    setMessages(updatedMessages);
     setInput("");
     setIsLoading(true);
 
     try {
-      const { data, error } = await supabase.functions.invoke("chat", {
-        body: { messages: [...messages, userMessage] },
+      const response = await fetch("http://localhost:3001/api/chat", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          messages: [
+            {
+              role: "system",
+              content:
+                "You are an IT and cybersecurity certification study assistant. Be helpful, clear, and concise.",
+            },
+            ...updatedMessages,
+          ],
+        }),
       });
 
-      if (error) {
-        throw error;
-      }
+      const data = await response.json();
 
       const assistantMessage: Message = {
         role: "assistant",
-        content: data.choices[0].message.content,
+        content: data.reply.content,
       };
+
       setMessages((prev) => [...prev, assistantMessage]);
-    } catch (error: any) {
+    } catch (error) {
       console.error("Chat error:", error);
       toast({
         title: "Error",
-        description: error.message || "Failed to get response. Please try again.",
+        description: "Failed to contact AI server.",
         variant: "destructive",
       });
     } finally {
@@ -126,7 +141,9 @@ const ChatBot = () => {
                           : "bg-muted"
                       }`}
                     >
-                      <p className="text-sm whitespace-pre-wrap">{msg.content}</p>
+                      <p className="text-sm whitespace-pre-wrap">
+                        {msg.content}
+                      </p>
                     </div>
                   </div>
                 ))}
