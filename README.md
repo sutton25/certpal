@@ -42,3 +42,109 @@ This is a concept for an app that uses AI software to create flashcards, practic
 - CORS
 - `node-fetch`
 - Local LLM via **Ollama**
+
+## Getting Started
+
+Follow these steps to run the full Cert Pal app (frontend + backend + Ollama).
+
+1. Requirements
+
+Install:
+
+Node.js (LTS recommended)
+
+npm
+
+Git
+
+Ollama --> https://ollama.com/download
+
+2. Clone the Repository
+git clone https://github.com/YOUR-USERNAME/YOUR-REPO.git
+cd YOUR-REPO
+
+3. Install Frontend Dependencies
+
+From the project root:
+
+npm install
+
+4. Run the Frontend
+npm run dev
+
+Your app will run at:
+--> http://localhost:5173 or something similar
+
+5. Install an Ollama Model
+
+Ollama must have a model downloaded.
+For example(check command prompt):
+
+type in cmd: 
+ollama pull llama3.2:3b
+
+You can check what’s available also with:
+ollama list
+
+6. Backend Setup (Express + Ollama API)
+
+Go into the server folder in the terminal:
+cd server
+
+Install server dependencies:
+npm install
+
+7. Run the Backend:
+npm start
+
+You should see something like:
+
+index.mjs loaded
+Ollama AI server running at http://localhost:3001
+
+8. Use the Chatbot
+
+With:
+Frontend → npm run dev
+Backend → npm start
+
+Ollama running in the background automatically
+
+Open the app:
+http://localhost:5173
+
+Click the chat bubble in the app and ask something like:
+“Explain the difference between a WAF and a firewall.”
+
+## Roadmap / Future Ideas
+
+ -Add more certifications (Security+, Network+, AWS, etc.)
+
+ -Add spaced-repetition algorithms
+
+ -Add custom note-taking per card
+
+ -Add “challenge mode” quizzes
+
+ -Add speech input for chatbot
+
+ Stream LLM responses for smoother chat
+
+## Written Paragraphs
+Why I Built This Project
+
+I decided to build this project because I’ve been really focused on improving my IT and cybersecurity skills, and I wanted a tool that could actually support how I learn. Most study apps either feel too basic or they require a subscription, and none of them include an AI that can explain concepts in a simple, personalized way. Since I’ve been working with AI tools a lot this semester, it made sense to experiment with integrating a local LLM so the entire app can run offline and completely privately. I also chose this project because it connects directly to my long-term goals in IT and cybersecurity, where understanding networking, firewalls, risks, and architecture is really important. Building this app let me combine my technical learning with hands-on development in a way that actually benefits me in real life.
+
+How I Built It
+
+I built the frontend using React with Vite and TypeScript because it's fast, lightweight, and easy to organize. I used shadcn/ui to create a consistent interface that feels modern but still simple enough for studying. The pages include flashcards, quizzes, exam modes, and a progress section, all connected through React Router. For the AI helper, I built a backend with Node.js and Express, which acts as a bridge between the chatbot component in the frontend and the local Ollama model running on my machine. This Express server receives messages, forwards them to Ollama, and sends the AI’s response back to the app.
+
+Challenges I Solved
+
+One of the biggest challenges I faced was getting the backend server and Ollama to communicate correctly. At first, the model path, ports, and file structure caused errors or made nothing show up in my terminal, so I had to learn how to debug Express routes, verify network requests, and test APIs manually. Another challenge was understanding how the ChatBot component sends requests and how to trace each step through the frontend, backend, and model until I found where things were failing. Once I understood that flow, everything became easier to fix.
+
+What I Learned / Reflection
+
+This project pushed me to connect everything I’ve been learning this semester: frontend development, backend APIs, LLMs, and problem-solving. I learned how to structure a full application, how to read and debug server logs, and how to integrate a real working AI model into a project without relying on external services. It also helped me understand networking concepts better, since I had to work with ports, endpoints, and routing. Most importantly, I feel more confident building bigger projects now and solving problems independently instead of getting stuck.
+
+If I continue working on this app, I want to add more certifications, track user progress more deeply, and refine the model so it feels even more like a real study tutor. This project ended up being something I’m proud of and something I actually benefit from, not just a school assignment.
