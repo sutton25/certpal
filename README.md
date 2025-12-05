@@ -148,3 +148,6 @@ What I Learned / Reflection
 This project pushed me to connect everything I’ve been learning this semester: frontend development, backend APIs, LLMs, and problem-solving. I learned how to structure a full application, how to read and debug server logs, and how to integrate a real working AI model into a project without relying on external services. It also helped me understand networking concepts better, since I had to work with ports, endpoints, and routing. Most importantly, I feel more confident building bigger projects now and solving problems independently instead of getting stuck.
 
 If I continue working on this app, I want to add more certifications, track user progress more deeply, and refine the model so it feels even more like a real study tutor. This project ended up being something I’m proud of and something I actually benefit from, not just a school assignment.
+
+## Video explaining a pain point I faced; how i solved it.
+https://youtu.be/d-C1mrCIcB0
